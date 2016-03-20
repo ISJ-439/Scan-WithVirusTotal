@@ -1,5 +1,5 @@
 ﻿# Paramiters For Script
-$NetworkDumpDir = 'Z:\ScanLogs'
+$NetworkDumpDir = 'Z:'
 
 # Initialize Variable Paramiters\
 [string]$PCName = $env:COMPUTERNAME
