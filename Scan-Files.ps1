@@ -45,4 +45,4 @@ $NetworkDumpDir = 'Z:'
 [string]$LogFile = "$NetworkDumpDir\Scan-Files-Results-(YYMMDD-HHMMSS)-($TimeStamp)_For($PCName)"+".csv"
 
 # Start Process
-Start-Process "C:\Scan-Files\sigcheck.exe" -Wait -ArgumentList " -c -u -e -s -vt -v `"C:\`"" -RedirectStandardOutput $LogFile
+Start-Process "C:\Scan-Files\sigcheck.exe" -Wait -ArgumentList " -c -u -e -s -vt -v `"C:\*`"" -RedirectStandardOutput $LogFile
