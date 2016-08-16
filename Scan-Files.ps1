@@ -1,7 +1,9 @@
-﻿<#
-usage: C:\Scan-Files\sigcheck.exe [-a][-h][-i][-e][-l][-n][[-s]|[-c|-ct]|[-m]][-q][-r][-u][-vt][-v[r][s]][-f catalog file] <file or directory>
-usage: C:\Scan-Files\sigcheck.exe [-d][-c|-ct] <file or directory>
-usage: C:\Scan-Files\sigcheck.exe [-t[u]] <certificate store name|*>
+<#
+### From sigcheck help ###
+
+usage: sigcheck.exe [-a][-h][-i][-e][-l][-n][[-s]|[-c|-ct]|[-m]][-q][-r][-u][-vt][-v[r][s]][-f catalog file] <file or directory>
+usage: sigcheck.exe [-d][-c|-ct] <file or directory>
+usage: sigcheck.exe [-t[u]] <certificate store name|*>
   -a      Show extended version information. The entropy measure reported
           is the bits per byte of information of the file's contents.
   -c      CSV output with comma delimiter
@@ -37,12 +39,12 @@ usage: C:\Scan-Files\sigcheck.exe [-t[u]] <certificate store name|*>
 #>
 
 # Paramiters For Script
-$NetworkDumpDir = 'Z:'
+$LogFolder = 'Z:'
 
 # Initialize Variable Paramiters\
 [string]$PCName = $env:COMPUTERNAME
 [string]$TimeStamp = Get-Date -UFormat '%y%m%d-%H%M%S'
-[string]$LogFile = "$NetworkDumpDir\Scan-Files-Results-(YYMMDD-HHMMSS)-($TimeStamp)_For($PCName)"+".csv"
+[string]$LogFile = "$LogFolder\Scan-Files-Results-(YYMMDD-HHMMSS)-($TimeStamp)_Hostname($PCName)"+".csv"
 
-# Start Process
+# Start Process [CSV Output, Show Only Non-Zero, Executables Only, Recursive, Auto-Agree to VirusTotal Terms, Use VirusTotal]
 Start-Process "C:\Scan-Files\sigcheck.exe" -Wait -ArgumentList " -c -u -e -s -vt -v `"C:\*`"" -RedirectStandardOutput $LogFile
