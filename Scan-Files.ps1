@@ -38,13 +38,44 @@ usage: sigcheck.exe [-t[u]] <certificate store name|*>
           option, you will be interactively prompted.
 #>
 
-# Paramiters For Script
-$LogFolder = 'Z:'
+# Get folder paramiters For Script
+$LogFolder = Read-Host "`n`n`n`nSpecify log folder without quotes or trailing slash. `n(ie. C:\Tmp )`n"
+$TargetFolder = Read-Host "`n`n`n`nSpecify target folder without quotes or trailing slash. `n(ie. C:\Tmp )`n"
 
-# Initialize Variable Paramiters\
+# Get and check if the sigcheck.exe location is valid.
+do{
+    $SigCheckLocation = ""
+    $SigCheckLocation = Read-Host "`n`n`n`nSpecify location of sigcheck.exe without quotes. `n(ie. C:\Tmp\sigcheck.exe )`n"
+}
+until($SigCheckLocation -match ".*(exe)")
+
+# Check if this is a recursive search.
+do{
+    $Recursive = ""
+    $Recursive = Read-Host "`n`n`n`nWill be a recursive (include sub-folders) search? [y/n]`n"
+}
+until($Recursive -eq "y" -or $Recursive -eq "n")
+
+# Initialize Variable Paramiters
 [string]$PCName = $env:COMPUTERNAME
 [string]$TimeStamp = Get-Date -UFormat '%y%m%d-%H%M%S'
-[string]$LogFile = "$LogFolder\Scan-Files-Results-(YYMMDD-HHMMSS)-($TimeStamp)_Hostname($PCName)"+".csv"
+[string]$LogFile = "$LogFolder\Scan-WithVirusTotal-(YYMMDD-HHMMSS)-($TimeStamp)_Hostname($PCName)"+".csv"
 
-# Start Process [CSV Output, Show Only Non-Zero, Executables Only, Recursive, Auto-Agree to VirusTotal Terms, Use VirusTotal]
-Start-Process "C:\Scan-Files\sigcheck.exe" -Wait -ArgumentList " -c -u -e -s -vt -v `"C:\*`"" -RedirectStandardOutput $LogFile
+# Start Recursive Search Process [CSV Output, Show Only Non-Zero, Executables Only, Recursive, Auto-Agree to VirusTotal Terms, Use VirusTotal]
+if($Recursive -eq "y"){
+    Start-Process $SigCheckLocation -Wait `
+        -ArgumentList " -c -u -e -s -vt -v `"$TargetFolder`"" `
+        -RedirectStandardOutput $LogFile
+}
+
+# Start Non-Recursive Search Process [CSV Output, Show Only Non-Zero, Executables Only, Auto-Agree to VirusTotal Terms, Use VirusTotal]
+elseif($Recursive -eq "n"){
+    Start-Process $SigCheckLocation -Wait `
+        -ArgumentList " -c -u -e -vt -v `"$TargetFolder`"" `
+        -RedirectStandardOutput $LogFile
+}
+
+# User hits "q" and wants to quit.
+else{
+    Write-Warning "Error in input."
+}
